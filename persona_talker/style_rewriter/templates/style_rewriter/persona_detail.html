@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ persona.name }} - StyleRewriter{% endblock %}
+
+{% block extra_css %}
+<style>
+    .persona-detail {
+        display: grid;
+        grid-template-columns: 450px 1fr;
+        gap: 50px;
+        margin-bottom: 30px;
+    }
+    
+    .persona-image-container {
+        text-align: center;
+    }
+    
+    .persona-image {
+        width: 100%;
+        max-width: 450px;
+        height: 600px;
+        object-fit: cover;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        transition: transform 0.3s;
+    }
+    
+    .persona-image:hover {
+        transform: scale(1.02);
+    }
+    
+    .persona-info {
+        padding: 20px 0;
+    }
+    
+    .persona-name {
+        font-size: 3rem;
+        color: #2c3e50;
+        margin-bottom: 24px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+    
+    .persona-meta {
+        color: #7f8c8d;
+        margin-bottom: 30px;
+        font-size: 0.95rem;
+        background: #f8f9fa;
+        padding: 16px;
+        border-radius: 10px;
+    }
+    
+    .persona-meta p {
+        margin: 8px 0;
+    }
+    
+    .persona-section {
+        margin-bottom: 35px;
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .persona-section-title {
+        font-size: 1.5rem;
+        color: #2c3e50;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 3px solid #3498db;
+        font-weight: 600;
+    }
+    
+    .persona-section-content {
+        color: #444;
+        line-height: 1.9;
+        white-space: pre-wrap;
+        font-size: 1.05rem;
+    }
+    
+    .persona-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+    }
+    
+    @media (max-width: 768px) {
+        .persona-detail {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="persona-detail">
+        <div class="persona-image-container">
+            {% if persona.image %}
+                <img src="{{ persona.image.url }}" alt="{{ persona.name }}" class="persona-image">
+            {% else %}
+                <div class="persona-image" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 5rem;">
+                    👤
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="persona-info">
+            <h1 class="persona-name">{{ persona.name }}</h1>
+            
+            <div class="persona-meta">
+                <p>
+                    <strong>Создатель:</strong> 
+                    {% if persona.is_system_persona %}
+                        Системная персона
+                    {% else %}
+                        {{ persona.user.username }}
+                    {% endif %}
+                </p>
+                <p><strong>Создано:</strong> {{ persona.created_at|date:"d.m.Y H:i" }}</p>
+            </div>
+            
+            {% if persona.description %}
+                <div class="persona-section">
+                    <h2 class="persona-section-title">О знаменитости</h2>
+                    <div class="persona-section-content">{{ persona.description }}</div>
+                </div>
+            {% endif %}
+            
+            <div class="persona-section">
+                <h2 class="persona-section-title">Стиль переписывания</h2>
+                <div class="persona-section-content">{{ persona.style_description }}</div>
+            </div>
+            
+            {% if user.is_authenticated %}
+                {% if persona.user == user or user.is_superuser %}
+                    <div class="persona-actions">
+                        <a href="{% url 'persona_edit' persona.pk %}" class="btn btn-primary" style="text-decoration: none;">Редактировать</a>
+                        <a href="{% url 'persona_delete' persona.pk %}" class="btn" style="background-color: #e74c3c; color: white; text-decoration: none;">Удалить</a>
+                    </div>
+                {% endif %}
+            {% endif %}
+            
+            <div style="margin-top: 30px;">
+                <a href="{% url 'home' %}" class="btn" style="background-color: #95a5a6; color: white; text-decoration: none;">← Вернуться к переписыванию</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

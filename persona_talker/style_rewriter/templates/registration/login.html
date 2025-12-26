@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход - StyleRewriter{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="auth-form">
+        <h2 style="margin-bottom: 20px; color: #2c3e50;">Вход</h2>
+        
+        {% if form.errors %}
+            <div class="message error">
+                Неверное имя пользователя или пароль. Попробуйте снова.
+            </div>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Имя пользователя</label>
+                <input type="text" name="username" id="{{ form.username.id_for_label }}" 
+                       required style="width: 100%; padding: 10px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Пароль</label>
+                <input type="password" name="password" id="{{ form.password.id_for_label }}" 
+                       required style="width: 100%; padding: 10px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            
+            <input type="hidden" name="next" value="{{ next }}">
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Войти</button>
+        </form>
+        
+        <p style="margin-top: 20px; text-align: center; color: #7f8c8d;">
+            Нет аккаунта? <a href="{% url 'register' %}" style="color: #3498db;">Зарегистрироваться</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+

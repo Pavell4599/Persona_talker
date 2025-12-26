@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Удалить персону - StyleRewriter{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h2 style="margin-bottom: 30px; color: #2c3e50;">Удалить персону</h2>
+    
+    <div style="background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+        <p style="margin: 0; color: #856404;">
+            <strong>Внимание!</strong> Вы уверены, что хотите удалить персону <strong>"{{ persona.name }}"</strong>? 
+            Это действие нельзя отменить.
+        </p>
+    </div>
+    
+    <form method="post" style="max-width: 400px;">
+        {% csrf_token %}
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn" style="background-color: #e74c3c; color: white;">Да, удалить</button>
+            <a href="{% url 'persona_detail' persona.pk %}" class="btn" style="background-color: #95a5a6; color: white; text-decoration: none;">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

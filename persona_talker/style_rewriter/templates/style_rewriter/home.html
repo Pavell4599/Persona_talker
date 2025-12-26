@@ -1,0 +1,443 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Главная - StyleRewriter{% endblock %}
+
+{% block extra_css %}
+<style>
+    .main-menu {
+        text-align: center;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        color: white;
+        margin-bottom: 40px;
+    }
+    
+    .main-menu h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+    
+    .main-menu p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        opacity: 0.95;
+    }
+    
+    .btn-browse {
+        background-color: white;
+        color: #667eea;
+        padding: 16px 40px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn-browse:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        background-color: #f8f9fa;
+    }
+    
+    .chat-section {
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin-top: 40px;
+    }
+    
+    .selected-persona-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8eaff 100%);
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .persona-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #667eea;
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    .persona-header-info {
+        flex: 1;
+    }
+    
+    .persona-header-info h2 {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+    
+    .persona-header-info .persona-status {
+        color: #667eea;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-top: 5px;
+    }
+    
+    .message-type-group {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .message-type-radio {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        padding: 12px 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: white;
+    }
+    
+    .message-type-radio:hover {
+        border-color: #667eea;
+        background: #f8f9ff;
+    }
+    
+    .message-type-radio input[type="radio"] {
+        margin: 0;
+        cursor: pointer;
+    }
+    
+    .message-type-radio input[type="radio"]:checked + label {
+        color: #667eea;
+        font-weight: 600;
+    }
+    
+    .message-type-radio label {
+        margin: 0;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1rem;
+    }
+    
+    .chat-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        transition: border-color 0.3s;
+    }
+    
+    .chat-input-wrapper:focus-within {
+        border-color: #667eea;
+        background: white;
+    }
+    
+    .chat-input-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #667eea;
+        flex-shrink: 0;
+    }
+    
+    .chat-input-field {
+        flex: 1;
+        border: none;
+        background: transparent;
+        font-size: 1rem;
+        line-height: 1.6;
+        resize: none;
+        outline: none;
+        min-height: 100px;
+        font-family: inherit;
+    }
+    
+    .result-message {
+        margin-top: 30px;
+        display: flex;
+        gap: 12px;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .result-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #667eea;
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        flex-shrink: 0;
+    }
+    
+    .result-bubble {
+        flex: 1;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 18px 18px 18px 4px;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        position: relative;
+    }
+    
+    .result-bubble::before {
+        content: '';
+        position: absolute;
+        left: -8px;
+        top: 20px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 8px 8px 8px 0;
+        border-color: transparent #667eea transparent transparent;
+    }
+    
+    .result-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        opacity: 0.95;
+    }
+    
+    .result-header-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+    
+    .result-header-time {
+        font-size: 0.85rem;
+        opacity: 0.8;
+    }
+    
+    .result-text {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        line-height: 1.8;
+        font-size: 1.05rem;
+        color: white;
+    }
+    
+    #original_text_field {
+        min-height: 100px;
+        width: 100%;
+        padding: 0;
+        font-size: 1rem;
+        border: none;
+        background: transparent;
+        resize: none;
+        outline: none;
+        font-family: inherit;
+        line-height: 1.6;
+    }
+    
+    .hidden {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-menu">
+    <h1>🎭 StyleRewriter</h1>
+    <p>Перепиши любой текст в стиле любимого персонажа!</p>
+    <a href="{% url 'personas_list' %}" class="btn-browse">Выбрать персонажа</a>
+</div>
+
+{% if selected_persona %}
+<div class="chat-section">
+    <div class="selected-persona-header">
+        {% if selected_persona.image %}
+            <img src="{{ selected_persona.image.url }}" alt="{{ selected_persona.name }}" class="persona-avatar">
+        {% else %}
+            <div class="persona-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
+                {{ selected_persona.name|first }}
+            </div>
+        {% endif %}
+        <div class="persona-header-info">
+            <h2>{{ selected_persona.name }}</h2>
+            <div class="persona-status">✅ Выбран для общения</div>
+        </div>
+    </div>
+    
+    <form method="post" action="{% url 'home' %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label>Тип сообщения:</label>
+            <div class="message-type-group">
+                {% for choice in form.message_type %}
+                    <div class="message-type-radio">
+                        {{ choice.tag }}
+                        <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if form.message_type.errors %}
+                <ul class="errorlist">
+                    {% for error in form.message_type.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        
+        <div class="form-group" id="text-input-group">
+            <label for="{{ form.original_text.id_for_label }}">{{ form.original_text.label }}</label>
+            <div class="chat-input-wrapper">
+                {% if selected_persona.image %}
+                    <img src="{{ selected_persona.image.url }}" alt="{{ selected_persona.name }}" class="chat-input-avatar">
+                {% else %}
+                    <div class="chat-input-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; font-weight: bold;">
+                        {{ selected_persona.name|first }}
+                    </div>
+                {% endif %}
+                {{ form.original_text }}
+            </div>
+            {% if form.original_text.errors %}
+                <ul class="errorlist">
+                    {% for error in form.original_text.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        
+        <div class="form-group" style="display: none;">
+            <label for="{{ form.persona.id_for_label }}">{{ form.persona.label }}</label>
+            {{ form.persona }}
+            {% if form.persona.errors %}
+                <ul class="errorlist">
+                    {% for error in form.persona.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="btn btn-primary" id="submit-btn" style="font-size: 1.1rem; padding: 14px 30px; width: 100%;">
+            ✨ Переписать в стиле {{ selected_persona.name }}
+        </button>
+    </form>
+    
+    <div id="loading-indicator" style="display: none; margin-top: 20px; padding: 20px; background-color: #ecf0f1; border-radius: 8px; text-align: center;">
+        <p style="color: #667eea; font-size: 16px;">⏳ Переписываю текст с помощью ИИ... Пожалуйста, подождите.</p>
+    </div>
+    
+    {% if rewritten_text %}
+        <div class="result-message">
+            {% if selected_persona.image %}
+                <img src="{{ selected_persona.image.url }}" alt="{{ selected_persona.name }}" class="result-avatar">
+            {% else %}
+                <div class="result-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.3rem; font-weight: bold;">
+                    {{ selected_persona.name|first }}
+                </div>
+            {% endif %}
+            <div class="result-bubble">
+                <div class="result-header">
+                    <span class="result-header-name">{{ selected_persona.name }}</span>
+                    <span class="result-header-time">только что</span>
+                </div>
+                <div class="result-text">{{ rewritten_text }}</div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% else %}
+<div class="chat-section" style="text-align: center; padding: 60px 40px;">
+    <h2 style="color: #7f8c8d; margin-bottom: 20px;">👆 Выберите персонажа для начала общения</h2>
+    <p style="color: #95a5a6; font-size: 1.1rem;">Нажмите на кнопку выше, чтобы просмотреть доступных персонажей</p>
+</div>
+{% endif %}
+
+<script>
+    // Показываем индикатор загрузки при отправке формы
+    document.querySelector('form')?.addEventListener('submit', function() {
+        const submitBtn = document.getElementById('submit-btn');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Обработка...';
+        }
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'block';
+        }
+    });
+    
+    // Управление видимостью поля ввода текста
+    const messageTypeRadios = document.querySelectorAll('input[name="message_type"]');
+    const textInputGroup = document.getElementById('text-input-group');
+    const textField = document.getElementById('original_text_field');
+    
+    function updateTextField() {
+        const selectedType = document.querySelector('input[name="message_type"]:checked')?.value;
+        if (selectedType === 'custom') {
+            textInputGroup.style.display = 'block';
+            textField.required = true;
+            textField.placeholder = 'Введите текст, который нужно переписать...';
+        } else {
+            textInputGroup.style.display = 'block';
+            textField.required = false;
+            const placeholders = {
+                'pickup': 'Введите основу для подката (необязательно)...',
+                'congratulation': 'Введите повод для поздравления (необязательно)...',
+                'joke': 'Введите тему для шутки (необязательно)...'
+            };
+            textField.placeholder = placeholders[selectedType] || 'Введите текст...';
+        }
+    }
+    
+    messageTypeRadios.forEach(radio => {
+        radio.addEventListener('change', updateTextField);
+    });
+    
+    // Инициализация при загрузке
+    updateTextField();
+    
+    // Обновляем стиль textarea для чата
+    if (textField) {
+        textField.classList.add('chat-input-field');
+    }
+</script>
+{% endblock %}

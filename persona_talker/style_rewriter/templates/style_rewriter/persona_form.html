@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - StyleRewriter{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h2 style="margin-bottom: 30px; color: #2c3e50;">{{ title }}</h2>
+    
+    <form method="post" enctype="multipart/form-data" style="max-width: 600px;">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <ul class="errorlist">
+                    {% for error in form.name.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.style_description.id_for_label }}">{{ form.style_description.label }}</label>
+            {{ form.style_description }}
+            {% if form.style_description.errors %}
+                <ul class="errorlist">
+                    {% for error in form.style_description.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <small style="color: #7f8c8d; display: block; margin-top: 5px;">
+                Краткое описание стиля речи, например: «Философский, пафосный, с метафорами о воле и сверхчеловеке»
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <ul class="errorlist">
+                    {% for error in form.description.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <small style="color: #7f8c8d; display: block; margin-top: 5px;">
+                Подробное описание знаменитости, биография, достижения (необязательно)
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.image.id_for_label }}">{{ form.image.label }}</label>
+            {{ form.image }}
+            {% if form.image.errors %}
+                <ul class="errorlist">
+                    {% for error in form.image.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if persona and persona.image %}
+                <div style="margin-top: 10px;">
+                    <p>Текущее изображение:</p>
+                    <img src="{{ persona.image.url }}" alt="{{ persona.name }}" style="max-width: 200px; border-radius: 8px;">
+                </div>
+            {% endif %}
+            <small style="color: #7f8c8d; display: block; margin-top: 5px;">
+                Загрузите фото знаменитости (необязательно)
+            </small>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="{% if persona %}{% url 'persona_detail' persona.pk %}{% else %}{% url 'personas_list' %}{% endif %}" class="btn" style="background-color: #95a5a6; color: white; text-decoration: none;">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
